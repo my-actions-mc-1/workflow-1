@@ -10,6 +10,11 @@ on:
         description: "dotnet version"
         required: false
         type: string
+      
+      project-path:
+        description: "path to project"
+        required: false
+        type: string
 
 jobs:
   dotnet-build:
@@ -32,6 +37,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Enter project folder
+        run: cd ${{ inputs.project-path }}
+      
       - name: Restore dependencies
         run: dotnet restore
 

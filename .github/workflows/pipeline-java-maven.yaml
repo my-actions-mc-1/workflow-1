@@ -8,10 +8,15 @@ on:
         required: false
         type: string
 
+      project-path:
+        description: "path to project"
+        required: false
+        type: string
+
 jobs:
   maven-build:
-    name: Build Java Maven Project
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,6 +26,9 @@ jobs:
         with:
           distribution: "temurin"
           java-version: ${{ inputs.java-version }}
+
+      - name: Enter project folder
+        run: cd ${{ inputs.project-path }}
 
       # - name: Sonatype Evaluate
       #   id: evaluate
