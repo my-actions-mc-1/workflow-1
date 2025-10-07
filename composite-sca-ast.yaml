@@ -1,0 +1,32 @@
+name: "Run SCA & AST"
+description: "Greet someone"
+inputs:
+  scan-targets: # id of input
+    description: "folder/files to scan for sontype"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Sonatype Evaluate
+      id: evaluate
+      uses: sonatype/actions/evaluate@v1
+      with:
+        iq-server-url: ${{ secrets.SONATYPE_SERVER_URL }}
+        username: ${{ secrets.SONATYPE_USERNAME }}
+        password: ${{ secrets.SONATYPE_PASSWORD }}
+        application-id: ${{ secrets.SONATYPE_APP_ID }}
+        scan-targets: "${{ inputs.scan-targets }}"
+
+    - name: Run Fortify on Demand SAST & SCA Scan
+      uses: fortify/github-action@v2
+      with:
+        sast-scan: true
+        debricked-sca-scan: true
+      env:
+        FOD_URL: https://ams.fortify.com
+        FOD_TENANT: ${{secrets.FOD_TENANT}}
+        FOD_USER: ${{secrets.FOD_USER}}
+        FOD_PASSWORD: ${{secrets.FOD_PAT}}
+        FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
+        FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
