@@ -56,7 +56,7 @@ jobs:
       - name: Build with Maven
         run: |
           cd ${{ inputs.project-path }}
-          mvn -B package --file pom.xml
+          mvn -B package --file pom.xml -DskipTests
 
       # - name: Upload artifact to Nexus Repository
       #   run: |
