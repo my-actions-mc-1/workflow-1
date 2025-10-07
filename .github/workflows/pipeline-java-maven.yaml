@@ -2,6 +2,11 @@ name: Reusable Workflow - Java Maven
 
 on:
   workflow_call:
+    inputs:
+      java-version:
+        description: "java version"
+        required: false
+        type: string
 
 jobs:
   maven-build:
@@ -15,7 +20,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: "17"
+          java-version: ${{ inputs.java-version }}
 
       # - name: Sonatype Evaluate
       #   id: evaluate
