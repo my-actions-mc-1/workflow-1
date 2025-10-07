@@ -46,7 +46,10 @@ jobs:
           ls -l
       
       - name: Restore dependencies
-        run: dotnet restore
+        run: |
+          pwd
+          ls -l
+          dotnet restore
 
       - name: Build with dotnet
         run: dotnet build --configuration Release --no-restore
