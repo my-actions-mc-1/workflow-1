@@ -36,23 +36,12 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
-      - name: Enter project folder
-        run: |
-          pwd
-          ls -l
-          cd ${{ inputs.project-path }}
-          pwd
-          ls -l
       
-      - name: Restore dependencies
+      - name: Restore dependencies & build with dotnet
         run: |
-          pwd
-          ls -l
+          cd ${{ inputs.project-path }}
           dotnet restore
-
-      - name: Build with dotnet
-        run: dotnet build --configuration Release --no-restore
+          dotnet build --configuration Release --no-restore
 
       # - name: Sonatype Evaluate
       #   id: evaluate

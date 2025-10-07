@@ -27,9 +27,6 @@ jobs:
           distribution: "temurin"
           java-version: ${{ inputs.java-version }}
 
-      - name: Enter project folder
-        run: cd ${{ inputs.project-path }}
-
       # - name: Sonatype Evaluate
       #   id: evaluate
       #   uses: sonatype/actions/evaluate@v1
@@ -38,7 +35,7 @@ jobs:
       #     username: ${{ secrets.SONATYPE_USERNAME }}
       #     password: ${{ secrets.SONATYPE_PASSWORD }}
       #     application-id: ${{ secrets.SONATYPE_APP_ID }}
-      #     scan-targets: ./pom.xml
+      #     scan-targets: ${{ inputs.project-path }}/pom.xml
 
       # - name: Log evaluate action output
       #   run: echo "${{ steps.evaluate.outputs.scan-id }} ${{ steps.evaluate.outputs.report-url }}"
@@ -57,7 +54,9 @@ jobs:
       #     FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: |
+          cd ${{ inputs.project-path }}
+          mvn -B package --file pom.xml
 
       # - name: Upload artifact to Nexus Repository
       #   run: |
