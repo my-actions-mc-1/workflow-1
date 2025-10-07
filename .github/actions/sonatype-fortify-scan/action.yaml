@@ -1,7 +1,7 @@
-name: "Run SCA & AST"
-description: "Greet someone"
+name: "sonatype-fortify-scan"
+description: "sca and ast scan"
 inputs:
-  scan-targets: # id of input
+  scan-targets:
     description: "folder/files to scan for sontype"
     required: true
 
@@ -17,6 +17,10 @@ runs:
         password: ${{ secrets.SONATYPE_PASSWORD }}
         application-id: ${{ secrets.SONATYPE_APP_ID }}
         scan-targets: "${{ inputs.scan-targets }}"
+
+    - name: Log evaluate action output
+      run: echo "${{ steps.evaluate.outputs.scan-id }} ${{ steps.evaluate.outputs.report-url }}"
+      shell: bash
 
     - name: Run Fortify on Demand SAST & SCA Scan
       uses: fortify/github-action@v2
