@@ -40,10 +40,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Intentionally fail this step
-        run: |
-          echo "This step is designed to fail."
-          exit 1
+      # - name: Intentionally fail this step
+      #   run: |
+      #     echo "This step is designed to fail."
+      #     exit 1
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
