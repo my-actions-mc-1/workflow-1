@@ -1,7 +1,4 @@
-name: Reusable Workflow - dotnet
-
-env:
-  PUBLISHED_ROOT: './publish_output'  
+name: main-pipeline-dotnet
 
 on:
   workflow_call:
@@ -22,6 +19,18 @@ on:
         MY_TOKEN:
           description: "Token"
           required: true
+        # SONATYPE_SERVER_URL:
+        #   description: "sonatype url"
+        #   required: true
+        # SONATYPE_USERNAME:
+        #   description: "sonatype un"
+        #   required: true
+        # SONATYPE_PASSWORD:
+        #   description: "sonatype pw"
+        #   required: true
+        # SONATYPE_APP_ID:
+        #   description: "sonatype appid"
+        #   required: true
 
 jobs:
   build:

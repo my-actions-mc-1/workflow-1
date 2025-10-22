@@ -1,4 +1,4 @@
-name: Reusable Workflow - Java Maven
+name: main-pipeline-java-maven
 
 on:
   workflow_call:
