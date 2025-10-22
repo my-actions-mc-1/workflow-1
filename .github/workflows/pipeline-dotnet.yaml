@@ -16,8 +16,18 @@ on:
         required: false
         type: string
 
+      project-env:
+        description: "Project environment"
+        required: false
+        type: string
+
+      MY_TOKEN:
+        description: "Token"
+        required: false
+        type: string
+
 jobs:
-  dotnet-build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -51,7 +61,7 @@ jobs:
       #     username: ${{ secrets.SONATYPE_USERNAME }}
       #     password: ${{ secrets.SONATYPE_PASSWORD }}
       #     application-id: ${{ secrets.SONATYPE_APP_ID }}
-      #     scan-targets: '**/bin/Release/**/*.dll **/bin/Release/**/*.nupkg'
+      #     scan-targets: '${{ inputs.project-path }}/**/bin/Release/**/*.dll ${{ inputs.project-path }}/**/bin/Release/**/*.nupkg'
       
       # - name: Log evaluate action output
       #   run: echo "${{ steps.evaluate.outputs.scan-id }} ${{ steps.evaluate.outputs.report-url }}"
@@ -72,5 +82,36 @@ jobs:
       - name: dotnet publish
         run: |
           cd ${{ inputs.project-path }}  
-          dotnet publish -c Release -o ${{env.PUBLISHED_ROOT}}
+          dotnet publish -c Release -o './published'
         
+      - name: (TEST) Upload a Build Artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: donet-artifact
+          path: "${{ inputs.project-path }}/published"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.project-env }}
+
+    steps:
+      - name: (TEST) Download Build Artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: donet-artifact
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: always()
+    steps:
+      - name: (TEST) Delete artifacts
+        run: |
+          artifacts=$(gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts --jq '.artifacts[].id')
+          for artifact_id in $artifacts; do
+            gh api --method DELETE repos/${{ github.repository }}/actions/artifacts/$artifact_id
+          done
+        env:
+          GITHUB_TOKEN: ${{ inputs.MY_TOKEN }}
