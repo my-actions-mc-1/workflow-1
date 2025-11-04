@@ -27,55 +27,7 @@ jobs:
           distribution: "temurin"
           java-version: ${{ inputs.java-version }}
 
-      # - name: Sonatype Evaluate
-      #   id: evaluate
-      #   uses: sonatype/actions/evaluate@v1
-      #   with:
-      #     iq-server-url: ${{ secrets.SONATYPE_SERVER_URL }}
-      #     username: ${{ secrets.SONATYPE_USERNAME }}
-      #     password: ${{ secrets.SONATYPE_PASSWORD }}
-      #     application-id: ${{ secrets.SONATYPE_APP_ID }}
-      #     scan-targets: ${{ inputs.project-path }}/pom.xml
-
-      # - name: Log evaluate action output
-      #   run: echo "${{ steps.evaluate.outputs.scan-id }} ${{ steps.evaluate.outputs.report-url }}"
-
-      # - name: Run Fortify on Demand SAST & SCA Scan
-      #   uses: fortify/github-action@v2
-      #   with:
-      #     sast-scan: true
-      #     debricked-sca-scan: true
-      #   env:
-      #     FOD_URL: https://ams.fortify.com
-      #     FOD_TENANT: ${{secrets.FOD_TENANT}}
-      #     FOD_USER: ${{secrets.FOD_USER}}
-      #     FOD_PASSWORD: ${{secrets.FOD_PAT}}
-      #     FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
-      #     FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
-
       - name: Build with Maven
         run: |
           cd ${{ inputs.project-path }}
           mvn -B package --file pom.xml -DskipTests
-
-      # - name: Upload artifact to Nexus Repository
-      #   run: |
-      #     ARTIFACT_PATH=$(ls target/my-springboot-app-*.jar | head -n 1)
-      #     ARTIFACT_FILE=$(basename $ARTIFACT_PATH)
-      #     VERSION=${{ github.sha }}
-      #     GROUP_ID=com.example
-      #     ARTIFACT_ID=my-springboot-app
-      #     REPO_URL=${{ secrets.NEXUS_REPO_URL }}
-
-      #     # Convert groupId to path (com.example -> com/example)
-      #     GROUP_PATH=$(echo $GROUP_ID | tr '.' '/')
-
-      #     curl -u ${{ secrets.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD }} \
-      #       --upload-file $ARTIFACT_PATH \
-      #       $REPO_URL/$GROUP_PATH/$ARTIFACT_ID/$VERSION/$ARTIFACT_ID-$VERSION.jar
-
-      # - name: Download artifact from Nexus
-      #   run: |
-      #     curl -u ${{ secrets.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD }} \
-      #       -o app.jar \
-      #       ${{ secrets.NEXUS_REPO_URL }}/com/example/my-springboot-app/${{ github.sha }}/my-springboot-app-${{ github.sha }}.jar

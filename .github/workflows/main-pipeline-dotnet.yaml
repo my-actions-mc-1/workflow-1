@@ -19,18 +19,6 @@ on:
         MY_TOKEN:
           description: "Token"
           required: true
-        # SONATYPE_SERVER_URL:
-        #   description: "sonatype url"
-        #   required: true
-        # SONATYPE_USERNAME:
-        #   description: "sonatype un"
-        #   required: true
-        # SONATYPE_PASSWORD:
-        #   description: "sonatype pw"
-        #   required: true
-        # SONATYPE_APP_ID:
-        #   description: "sonatype appid"
-        #   required: true
 
 jobs:
   build:
@@ -63,32 +51,6 @@ jobs:
           cd ${{ inputs.project-path }}
           dotnet restore
           dotnet build --configuration Release --no-restore
-
-      # - name: Sonatype Evaluate
-      #   id: evaluate
-      #   uses: sonatype/actions/evaluate@v1
-      #   with:
-      #     iq-server-url: ${{ secrets.SONATYPE_SERVER_URL }}
-      #     username: ${{ secrets.SONATYPE_USERNAME }}
-      #     password: ${{ secrets.SONATYPE_PASSWORD }}
-      #     application-id: ${{ secrets.SONATYPE_APP_ID }}
-      #     scan-targets: '${{ inputs.project-path }}/**/bin/Release/**/*.dll ${{ inputs.project-path }}/**/bin/Release/**/*.nupkg'
-      
-      # - name: Log evaluate action output
-      #   run: echo "${{ steps.evaluate.outputs.scan-id }} ${{ steps.evaluate.outputs.report-url }}"
-
-      # - name: Run Fortify on Demand SAST & SCA Scan
-      #   uses: fortify/github-action@v2
-      #   with:
-      #     sast-scan: true
-      #     debricked-sca-scan: true
-      #   env:
-      #     FOD_URL: https://ams.fortify.com
-      #     FOD_TENANT: ${{secrets.FOD_TENANT}}
-      #     FOD_USER: ${{secrets.FOD_USER}}
-      #     FOD_PASSWORD: ${{secrets.FOD_PAT}}
-      #     FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
-      #     FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
 
       - name: dotnet publish
         run: |
