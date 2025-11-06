@@ -15,6 +15,14 @@ on:
         description: "Project environment"
         required: true
         type: string
+      image-name:
+        description: "image name"
+        required: true
+        type: string
+      image-tags:
+        description: "image tags"
+        required: true
+        type: string
     secrets:
         MY_TOKEN:
           description: "Token"
@@ -28,15 +36,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Intentionally fail this step
-        run: |
-          echo "This step is designed to fail."
-          exit 1
+      # - name: Intentionally fail this step
+      #   run: |
+      #     echo "This step is designed to fail."
+      #     exit 1
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ inputs.dotnet-version }}
+      # - name: Set up .NET
+      #   uses: actions/setup-dotnet@v4
+      #   with:
+      #     dotnet-version: ${{ inputs.dotnet-version }}
 
       # - name: Set up dependency caching for faster builds
       #   uses: actions/cache@v4
@@ -46,16 +54,26 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-nuget-
       
-      - name: Restore dependencies & build with dotnet
-        run: |
-          cd ${{ inputs.project-path }}
-          dotnet restore
-          dotnet build --configuration Release --no-restore
+      # - name: Restore dependencies & build with dotnet
+      #   run: |
+      #     cd ${{ inputs.project-path }}
+      #     dotnet restore
+      #     dotnet build --configuration Release --no-restore
 
-      - name: dotnet publish
-        run: |
-          cd ${{ inputs.project-path }}  
-          dotnet publish -c Release -o './published'
+      # - name: dotnet publish
+      #   run: |
+      #     cd ${{ inputs.project-path }}  
+      #     dotnet publish -c Release -o './published'
+
+
+      - name: Build image with Buildah
+        uses: redhat-actions/buildah-build@v2
+        with:
+          containerfiles: ${{ inputs.project-path }}/Dockerfile
+          image: ${{ inputs.IMAGE_NAME }}
+          tags: ${{ inputs.IMAGE_TAG }}
+          context: ${{ inputs.project-path }}/.
+
         
       # - name: (TEST) Upload a Build Artifact
       #   uses: actions/upload-artifact@v4.6.2
