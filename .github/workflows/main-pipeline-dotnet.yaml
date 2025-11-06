@@ -56,11 +56,10 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-nuget-
 
-      - name: Restore dependencies, build & publish with dotnet
+      - name: Restore dependencies & build with dotnet
         run: |
           cd ${{ inputs.project_path }}
           dotnet restore
-          dotnet build -c Release --no-restore
           dotnet publish -c Release -o './publish' --no-restore
 
       # - name: Build image with Buildah
