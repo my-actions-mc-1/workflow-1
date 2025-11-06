@@ -24,9 +24,9 @@ on:
         required: true
         type: string
     secrets:
-        MY_TOKEN:
-          description: "Token"
-          required: true
+      MY_TOKEN:
+        description: "Token"
+        required: true
 
 jobs:
   build:
@@ -41,45 +41,41 @@ jobs:
       #     echo "This step is designed to fail."
       #     exit 1
 
-  # - name: Set up .NET
-  #   uses: actions/setup-dotnet@v4
-  #   with:
-  #     dotnet-version: ${{ inputs.dotnet_version }}
-
-  # - name: Set up dependency caching for faster builds
-  #   uses: actions/cache@v4
-  #   with:
-  #     path: ~/.nuget/packages
-  #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-  #     restore-keys: |
-  #       ${{ runner.os }}-nuget-
-      
-  # - name: Restore dependencies & build with dotnet
-  #   run: |
-  #     cd ${{ inputs.project_path }}
-  #     dotnet restore
-  #     dotnet build --configuration Release --no-restore
-
-  # - name: dotnet publish
-  #   run: |
-  #     cd ${{ inputs.project_path }}  
-  #     dotnet publish -c Release -o './published'
-
-
-      - name: Build image with Buildah
-        uses: redhat-actions/buildah-build@v2
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
         with:
-          containerfiles: ${{ inputs.project_path }}/Dockerfile
-          image: ${{ inputs.image_name }}
-          tags: ${{ inputs.image_tags }}
-          context: ${{ inputs.project_path }}/.
+          dotnet-version: ${{ inputs.dotnet_version }}
+        env:
+          DOTNET_INSTALL_DIR: "./.dotnet"
 
-        
-  # - name: (TEST) Upload a Build Artifact
-  #   uses: actions/upload-artifact@v4.6.2
-  #   with:
-  #     name: donet-artifact
-  #     path: "${{ inputs.project_path }}/published"
+      # - name: Set up dependency caching for faster builds
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.nuget/packages
+      #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies, build & publish with dotnet
+        run: |
+          cd ${{ inputs.project_path }}
+          dotnet restore
+          dotnet build -c Release --no-restore
+          dotnet publish -c Release -o './publish' --no-restore
+
+      # - name: Build image with Buildah
+      #   uses: redhat-actions/buildah-build@v2
+      #   with:
+      #     containerfiles: ${{ inputs.project_path }}/Dockerfile
+      #     image: ${{ inputs.image_name }}
+      #     tags: ${{ inputs.image_tags }}
+      #     context: ${{ inputs.project_path }}/.
+
+      # - name: (TEST) Upload a Build Artifact
+      #   uses: actions/upload-artifact@v4.6.2
+      #   with:
+      #     name: donet-artifact
+      #     path: "${{ inputs.project_path }}/publish"
 
   # deploy:
   #   needs: build
