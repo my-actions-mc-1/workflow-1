@@ -3,23 +3,23 @@ name: main-pipeline-dotnet
 on:
   workflow_call:
     inputs:
-      dotnet-version:
+      DOTNET_VERSION:
         description: "dotnet version"
         required: true
         type: string
-      project-path:
+      PROJECT_PATH:
         description: "path to project"
         required: true
         type: string
-      project-env:
+      PROJECT_ENV:
         description: "Project environment"
         required: true
         type: string
-      image-name:
+      IMAGE_NAME:
         description: "image name"
         required: true
         type: string
-      image-tags:
+      IMAGE_TAGS:
         description: "image tags"
         required: true
         type: string
@@ -41,51 +41,51 @@ jobs:
       #     echo "This step is designed to fail."
       #     exit 1
 
-      # - name: Set up .NET
-      #   uses: actions/setup-dotnet@v4
-      #   with:
-      #     dotnet-version: ${{ inputs.dotnet-version }}
+  # - name: Set up .NET
+  #   uses: actions/setup-dotnet@v4
+  #   with:
+  #     dotnet-version: ${{ inputs.DOTNET_VERSION }}
 
-      # - name: Set up dependency caching for faster builds
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.nuget/packages
-      #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nuget-
+  # - name: Set up dependency caching for faster builds
+  #   uses: actions/cache@v4
+  #   with:
+  #     path: ~/.nuget/packages
+  #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+  #     restore-keys: |
+  #       ${{ runner.os }}-nuget-
       
-      # - name: Restore dependencies & build with dotnet
-      #   run: |
-      #     cd ${{ inputs.project-path }}
-      #     dotnet restore
-      #     dotnet build --configuration Release --no-restore
+  # - name: Restore dependencies & build with dotnet
+  #   run: |
+  #     cd ${{ inputs.PROJECT_PATH }}
+  #     dotnet restore
+  #     dotnet build --configuration Release --no-restore
 
-      # - name: dotnet publish
-      #   run: |
-      #     cd ${{ inputs.project-path }}  
-      #     dotnet publish -c Release -o './published'
+  # - name: dotnet publish
+  #   run: |
+  #     cd ${{ inputs.PROJECT_PATH }}  
+  #     dotnet publish -c Release -o './published'
 
 
       - name: Build image with Buildah
         uses: redhat-actions/buildah-build@v2
         with:
-          containerfiles: ${{ inputs.project-path }}/Dockerfile
+          containerfiles: ${{ inputs.PROJECT_PATH }}/Dockerfile
           image: ${{ inputs.IMAGE_NAME }}
-          tags: ${{ inputs.IMAGE_TAG }}
-          context: ${{ inputs.project-path }}/.
+          tags: ${{ inputs.IMAGE_TAGS }}
+          context: ${{ inputs.PROJECT_PATH }}/.
 
         
-      # - name: (TEST) Upload a Build Artifact
-      #   uses: actions/upload-artifact@v4.6.2
-      #   with:
-      #     name: donet-artifact
-      #     path: "${{ inputs.project-path }}/published"
+  # - name: (TEST) Upload a Build Artifact
+  #   uses: actions/upload-artifact@v4.6.2
+  #   with:
+  #     name: donet-artifact
+  #     path: "${{ inputs.PROJECT_PATH }}/published"
 
   # deploy:
   #   needs: build
   #   runs-on: ubuntu-latest
   #   environment:
-  #     name: ${{ inputs.project-env }}
+  #     name: ${{ inputs.PROJECT_ENV }}
 
   #   steps:
   #     - name: (TEST) Download Build Artifact
