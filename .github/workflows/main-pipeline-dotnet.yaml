@@ -3,23 +3,23 @@ name: main-pipeline-dotnet
 on:
   workflow_call:
     inputs:
-      DOTNET_VERSION:
+      dotnet_version:
         description: "dotnet version"
         required: true
         type: string
-      PROJECT_PATH:
+      project_path:
         description: "path to project"
         required: true
         type: string
-      PROJECT_ENV:
+      project_env:
         description: "Project environment"
         required: true
         type: string
-      IMAGE_NAME:
+      image_name:
         description: "image name"
         required: true
         type: string
-      IMAGE_TAGS:
+      image_tags:
         description: "image tags"
         required: true
         type: string
@@ -44,7 +44,7 @@ jobs:
   # - name: Set up .NET
   #   uses: actions/setup-dotnet@v4
   #   with:
-  #     dotnet-version: ${{ inputs.DOTNET_VERSION }}
+  #     dotnet-version: ${{ inputs.dotnet_version }}
 
   # - name: Set up dependency caching for faster builds
   #   uses: actions/cache@v4
@@ -56,36 +56,36 @@ jobs:
       
   # - name: Restore dependencies & build with dotnet
   #   run: |
-  #     cd ${{ inputs.PROJECT_PATH }}
+  #     cd ${{ inputs.project_path }}
   #     dotnet restore
   #     dotnet build --configuration Release --no-restore
 
   # - name: dotnet publish
   #   run: |
-  #     cd ${{ inputs.PROJECT_PATH }}  
+  #     cd ${{ inputs.project_path }}  
   #     dotnet publish -c Release -o './published'
 
 
       - name: Build image with Buildah
         uses: redhat-actions/buildah-build@v2
         with:
-          containerfiles: ${{ inputs.PROJECT_PATH }}/Dockerfile
-          image: ${{ inputs.IMAGE_NAME }}
-          tags: ${{ inputs.IMAGE_TAGS }}
-          context: ${{ inputs.PROJECT_PATH }}/.
+          containerfiles: ${{ inputs.project_path }}/Dockerfile
+          image: ${{ inputs.image_name }}
+          tags: ${{ inputs.image_tags }}
+          context: ${{ inputs.project_path }}/.
 
         
   # - name: (TEST) Upload a Build Artifact
   #   uses: actions/upload-artifact@v4.6.2
   #   with:
   #     name: donet-artifact
-  #     path: "${{ inputs.PROJECT_PATH }}/published"
+  #     path: "${{ inputs.project_path }}/published"
 
   # deploy:
   #   needs: build
   #   runs-on: ubuntu-latest
   #   environment:
-  #     name: ${{ inputs.PROJECT_ENV }}
+  #     name: ${{ inputs.project_env }}
 
   #   steps:
   #     - name: (TEST) Download Build Artifact
