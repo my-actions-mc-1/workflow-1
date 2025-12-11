@@ -30,7 +30,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: home-hosted
 
     steps:
       - name: Checkout repository
